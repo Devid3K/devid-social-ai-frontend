@@ -55,14 +55,34 @@ export const useAuthStore = defineStore('auth', {
     },
 
     initFromStorage() {
-      const token = JSON.parse(localStorage.getItem('token') || 'null') as string | null
-      const user = JSON.parse(localStorage.getItem('user') || 'null') as User | null
+      try {
+        const token = JSON.parse(localStorage.getItem('token') || 'null') as string | null
+        const user = JSON.parse(localStorage.getItem('user') || 'null') as User | null
 
-      if (token && user) {
-        this.logged = true
-        this.token = token
+        if (token && user) {
+          this.logged = true
+          this.token = token
+          this.user = user
+          this.role = user.role as UserRole
+        }
+      } catch {
+        this.setLogout()
+      }
+    },
+
+    async fetchProfile() {
+      try {
+        const resp = await ApiService.v1.Auth.Profile()
+        const user = resp.data as User
         this.user = user
         this.role = user.role as UserRole
+        localStorage.setItem('user', JSON.stringify(user))
+      } catch (error: any) {
+        // If profile fetch fails (e.g. token expired), log out
+        if (error?.response?.status === 401) {
+          this.setLogout()
+        }
+        throw error
       }
     },
   },
