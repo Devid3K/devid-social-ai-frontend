@@ -1,0 +1,18 @@
+export const ROUTE_NAMES = {
+  LOGIN: 'Login',
+  LOGOUT: 'Logout',
+  DASHBOARD: 'Dashboard',
+  SCRIPTS: 'ScriptGeneration',
+  VIDEOS: 'VideoGeneration',
+  TRENDS: 'TrendAnalysis',
+  POSTS: 'AutoPost',
+  NEW_POST: 'NewPost',
+  ACCOUNTS: 'SocialAccounts',
+  PROMPT_HISTORY: 'PromptHistory',
+  REALTIME: 'Realtime',
+  TIKTOK_TRENDS: 'TikTokTrends',
+  FINANCE: 'Finance',
+  TAX_CALCULATOR: 'TaxCalculator',
+  USERS: 'UserManagement',
+  PROFILE: 'Profile',
+} as const
