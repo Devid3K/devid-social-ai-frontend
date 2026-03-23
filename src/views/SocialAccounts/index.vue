@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 space-y-6">
     <div class="flex items-center justify-between flex-wrap gap-3">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">บัญชีโซเชียล</h1>
+      <h1 class="text-2xl font-bold text-gray-900">บัญชีโซเชียล</h1>
       <n-button type="primary" @click="openAddModal">
         + เพิ่มบัญชี
       </n-button>
@@ -43,13 +43,13 @@
           </div>
         </div>
 
-        <p class="text-base font-semibold text-gray-900 dark:text-white truncate">
+        <p class="text-base font-semibold text-white truncate">
           {{ account.accountName }}
         </p>
-        <p v-if="account.followers" class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+        <p v-if="account.followers" class="text-sm text-slate-300 mt-1">
           ผู้ติดตาม: {{ formatNumber(account.followers) }}
         </p>
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p class="text-xs text-slate-300 mt-1">
           ซิงค์ล่าสุด: {{ account.lastSyncAt ? formatRelativeTime(account.lastSyncAt) : 'ยังไม่เคย' }}
         </p>
 

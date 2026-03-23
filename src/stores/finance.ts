@@ -9,7 +9,6 @@ export const useFinanceStore = defineStore('finance', {
     list: [] as Transaction[],
     summary: null as FinanceSummary | null,
     taxCalculation: null as TaxCalculation | null,
-    // Pagination
     page: 1,
     limit: 20,
     total: 0,
@@ -24,7 +23,6 @@ export const useFinanceStore = defineStore('finance', {
       this.loading = true
       this.error = null
       try {
-        // TODO: map paginated response to list and total
         const resp = await ApiService.v1.Finance.Transactions({
           page: params?.page ?? this.page,
           limit: params?.limit ?? this.limit,
@@ -32,37 +30,41 @@ export const useFinanceStore = defineStore('finance', {
           startDate: params?.startDate,
           endDate: params?.endDate,
         })
-        this.list = resp.data.data ?? resp.data
-        this.total = resp.data.total ?? this.list.length
+        const payload = resp.data?.data ?? resp.data
+        this.list = payload.data ?? payload
+        this.total = payload.total ?? this.list.length
+        this.page = payload.page ?? params?.page ?? this.page
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to load transactions'
+        this.error = error?.response?.data?.message ?? error?.message ?? 'โหลดรายการไม่สำเร็จ'
       } finally {
         this.loading = false
       }
     },
 
     async create(data: Partial<Transaction>) {
+      this.error = null
       try {
-        // TODO: append new transaction and refresh summary
         const resp = await ApiService.v1.Finance.CreateTransaction(data)
-        this.list.unshift(resp.data)
+        const tx = resp.data?.data ?? resp.data
+        this.list.unshift(tx)
         this.total += 1
-        return resp.data as Transaction
+        return tx as Transaction
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to create transaction'
+        this.error = error?.response?.data?.message ?? error?.message ?? 'สร้างรายการไม่สำเร็จ'
         throw error
       }
     },
 
     async update(id: number, data: Partial<Transaction>) {
+      this.error = null
       try {
-        // TODO: update transaction in list in-place
         const resp = await ApiService.v1.Finance.UpdateTransaction(id, data)
+        const tx = resp.data?.data ?? resp.data
         const index = this.list.findIndex((t) => t.id === id)
-        if (index !== -1) this.list[index] = resp.data
-        return resp.data as Transaction
+        if (index !== -1) this.list[index] = tx
+        return tx as Transaction
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to update transaction'
+        this.error = error?.response?.data?.message ?? error?.message ?? 'แก้ไขรายการไม่สำเร็จ'
         throw error
       }
     },
@@ -73,32 +75,29 @@ export const useFinanceStore = defineStore('finance', {
         this.list = this.list.filter((t) => t.id !== id)
         this.total = Math.max(0, this.total - 1)
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to delete transaction'
+        this.error = error?.response?.data?.message ?? error?.message ?? 'ลบรายการไม่สำเร็จ'
         throw error
       }
     },
 
     async fetchSummary(params?: { startDate?: string; endDate?: string }) {
       try {
-        // TODO: map finance summary response
         const resp = await ApiService.v1.Finance.Summary(params)
-        this.summary = resp.data
+        this.summary = resp.data?.data ?? resp.data
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to load finance summary'
-        throw error
+        this.error = error?.response?.data?.message ?? error?.message ?? 'โหลดสรุปไม่สำเร็จ'
       }
     },
 
-    async calculateTax(data: { grossIncome: number; deductions?: number }) {
+    async calculateTax(data: { grossIncome: number; personalDeduction?: number; employmentDeduction?: number; otherDeductions?: number }) {
       this.loading = true
       this.error = null
       try {
-        // TODO: map tax calculation response
         const resp = await ApiService.v1.Finance.CalculateTax(data)
-        this.taxCalculation = resp.data
-        return resp.data as TaxCalculation
+        this.taxCalculation = resp.data?.data ?? resp.data
+        return this.taxCalculation as TaxCalculation
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to calculate tax'
+        this.error = error?.response?.data?.message ?? error?.message ?? 'คำนวณภาษีไม่สำเร็จ'
         throw error
       } finally {
         this.loading = false

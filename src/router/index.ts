@@ -4,6 +4,12 @@ import { ROUTE_NAMES } from '@/constants/routes'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // ─── Root redirect ───────────────────────────────────────────
+    {
+      path: '/',
+      redirect: '/dashboard',
+    },
+
     // ─── Auth (Blank layout) ───────────────────────────────────────
     {
       path: '/login',

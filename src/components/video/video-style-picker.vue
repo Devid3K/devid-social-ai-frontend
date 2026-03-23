@@ -14,7 +14,7 @@
         :class="
           selected === (style.id ?? style.name)
             ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
-            : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300'
+            : 'border-gray-200 hover:border-indigo-300'
         "
         @click="handleSelect(style.id ?? style.name)"
       >
@@ -31,8 +31,8 @@
             </svg>
           </n-icon>
         </div>
-        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ style.name }}</p>
-        <p v-if="style.description" class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">
+        <p class="text-sm font-medium text-gray-900">{{ style.name }}</p>
+        <p v-if="style.description" class="text-xs text-slate-300 mt-0.5 line-clamp-2">
           {{ style.description }}
         </p>
       </div>

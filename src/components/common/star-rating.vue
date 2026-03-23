@@ -8,7 +8,7 @@
     >
       &#9733;
     </span>
-    <span v-if="showValue" class="ml-1 text-sm text-gray-500 dark:text-gray-400">
+    <span v-if="showValue" class="ml-1 text-sm text-gray-500">
       {{ rating.toFixed(1) }}
     </span>
   </div>

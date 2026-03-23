@@ -11,14 +11,14 @@
         <PlatformIcon :platform="platform" :style="{ color: platformColor }" />
       </div>
       <div class="flex-1 min-w-0">
-        <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+        <p class="text-sm font-medium text-slate-300 mb-2">
           {{ getPlatformLabel(platform) }}
         </p>
         <div class="space-y-2">
           <n-statistic label="ผู้ติดตาม" :value="formatNumber(followers)" tabular-nums />
           <n-statistic label="ยอดเข้าชม" :value="formatNumber(views)" tabular-nums />
           <div>
-            <p class="text-xs text-gray-500 dark:text-gray-400">รายได้</p>
+            <p class="text-xs text-gray-500">รายได้</p>
             <p class="text-lg font-semibold text-green-600 dark:text-green-400">
               {{ formatCurrency(revenue) }}
             </p>

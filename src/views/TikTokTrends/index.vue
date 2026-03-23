@@ -1,6 +1,6 @@
 <template>
   <div class="p-6 space-y-6">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">TikTok Trending Products</h1>
+    <h1 class="text-2xl font-bold text-gray-900">TikTok Trending Products</h1>
 
     <n-alert v-if="trendStore.error" type="error" :title="trendStore.error" closable />
 

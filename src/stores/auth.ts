@@ -20,7 +20,8 @@ export const useAuthStore = defineStore('auth', {
     async login(email: string, password: string) {
       try {
         const resp = await ApiService.v1.Auth.Login({ email, password })
-        const { token, user } = resp.data
+        const payload = resp.data?.data ?? resp.data
+        const { token, user } = payload
 
         this.logged = true
         this.token = token
@@ -73,7 +74,7 @@ export const useAuthStore = defineStore('auth', {
     async fetchProfile() {
       try {
         const resp = await ApiService.v1.Auth.Profile()
-        const user = resp.data as User
+        const user = (resp.data?.data ?? resp.data) as User
         this.user = user
         this.role = user.role as UserRole
         localStorage.setItem('user', JSON.stringify(user))

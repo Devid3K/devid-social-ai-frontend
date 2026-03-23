@@ -1,27 +1,43 @@
 <template>
   <div class="p-6 space-y-6">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Prompt History</h1>
+    <h1 class="text-2xl font-bold text-gray-900">ประวัติ Prompt</h1>
 
     <n-alert v-if="promptHistoryStore.error" type="error" :title="promptHistoryStore.error" closable />
 
-    <!-- Stats -->
-    <div v-if="promptHistoryStore.stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <n-card v-for="(val, key) in promptHistoryStore.stats" :key="key" size="small">
-        <p class="text-xs text-gray-500 dark:text-gray-400 capitalize">{{ key }}</p>
-        <p class="text-xl font-bold text-gray-900 dark:text-white">{{ val }}</p>
+    <!-- Stats cards -->
+    <div v-if="promptHistoryStore.stats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      <n-card size="small">
+        <p class="text-xs text-gray-500">Prompt ทั้งหมด</p>
+        <p class="text-xl font-bold text-gray-900">{{ promptHistoryStore.stats.totalPrompts }}</p>
+      </n-card>
+      <n-card size="small">
+        <p class="text-xs text-gray-500">สร้างบทละคร</p>
+        <p class="text-xl font-bold text-rose-400">{{ promptHistoryStore.stats.scriptPrompts }}</p>
+      </n-card>
+      <n-card size="small">
+        <p class="text-xs text-gray-500">สร้างวิดีโอ</p>
+        <p class="text-xl font-bold text-rose-400">{{ promptHistoryStore.stats.videoPrompts }}</p>
+      </n-card>
+      <n-card size="small">
+        <p class="text-xs text-gray-500">โพสต์</p>
+        <p class="text-xl font-bold text-green-600">{{ promptHistoryStore.stats.postPrompts }}</p>
+      </n-card>
+      <n-card size="small">
+        <p class="text-xs text-gray-500">7 วันล่าสุด</p>
+        <p class="text-xl font-bold text-orange-500">{{ promptHistoryStore.stats.recentWeekActivity }}</p>
       </n-card>
     </div>
 
-    <!-- Filter by module -->
-    <div class="flex gap-3 items-center">
-      <n-input
+    <!-- Filter -->
+    <div class="flex gap-3 items-center flex-wrap">
+      <n-select
         v-model:value="moduleFilter"
-        placeholder="Filter by module..."
+        :options="moduleOptions"
+        placeholder="กรองตามโมดูล"
         clearable
-        class="max-w-xs"
-        @change="handleFilter"
+        class="w-48"
+        @update:value="handleFilter"
       />
-      <n-button @click="handleFilter">Filter</n-button>
     </div>
 
     <!-- Data table -->
@@ -47,37 +63,56 @@ import { usePromptHistoryStore } from '@/stores/prompt-history'
 import type { PromptHistoryItem } from '@/stores/prompt-history'
 
 const promptHistoryStore = usePromptHistoryStore()
-const moduleFilter = ref('')
+const moduleFilter = ref<string | null>(null)
+
+const moduleOptions = [
+  { label: 'บทละคร (Script)', value: 'script' },
+  { label: 'วิดีโอ (Video)', value: 'video' },
+  { label: 'โพสต์ (Post)', value: 'post' },
+]
 
 const columns: DataTableColumns<PromptHistoryItem> = [
   {
-    title: 'Date',
+    title: 'วันที่',
     key: 'createdAt',
-    width: 150,
-    render: (row) => new Date(row.createdAt).toLocaleString(),
+    width: 160,
+    render: (row) => new Date(row.createdAt).toLocaleString('th-TH'),
   },
   {
-    title: 'Module',
+    title: 'โมดูล',
     key: 'module',
     width: 120,
-    render: (row) => h(NTag, { size: 'small', type: 'info' }, () => row.module),
+    render: (row) => {
+      if (row.aiScript) return h(NTag, { size: 'small', type: 'info' }, () => 'Script')
+      if (row.videoJob) return h(NTag, { size: 'small', type: 'warning' }, () => 'Video')
+      if (row.post) return h(NTag, { size: 'small', type: 'success' }, () => 'Post')
+      return h(NTag, { size: 'small' }, () => 'Other')
+    },
   },
   {
     title: 'Prompt',
-    key: 'prompt',
+    key: 'promptText',
     ellipsis: { tooltip: true },
+    render: (row) => row.promptText?.slice(0, 100) ?? '-',
   },
   {
-    title: 'Tokens',
-    key: 'tokensUsed',
+    title: 'Views',
+    key: 'viewCount',
     width: 80,
+    render: (row) => String(row.viewCount ?? 0),
+  },
+  {
+    title: 'Revenue',
+    key: 'revenue',
+    width: 100,
+    render: (row) => `฿${Number(row.revenue ?? 0).toLocaleString()}`,
   },
   {
     title: '',
     key: 'actions',
     width: 80,
     render: (row) =>
-      h(NButton, { size: 'tiny', type: 'error', onClick: () => promptHistoryStore.delete(row.id) }, () => 'Delete'),
+      h(NButton, { size: 'tiny', type: 'error', quaternary: true, onClick: () => promptHistoryStore.delete(row.id) }, () => 'ลบ'),
   },
 ]
 
@@ -92,11 +127,11 @@ onMounted(async () => {
   await Promise.all([promptHistoryStore.fetch(), promptHistoryStore.fetchStats()])
 })
 
-function handleFilter() {
-  promptHistoryStore.fetch({ page: 1, module: moduleFilter.value || undefined })
+function handleFilter(value: string | null) {
+  promptHistoryStore.fetch({ page: 1, module: value ?? undefined })
 }
 
 function handlePageChange(page: number) {
-  promptHistoryStore.fetch({ page, module: moduleFilter.value || undefined })
+  promptHistoryStore.fetch({ page, module: moduleFilter.value ?? undefined })
 }
 </script>

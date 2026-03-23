@@ -5,7 +5,7 @@
         <n-notification-provider>
           <n-message-provider>
             <GlobalSetup />
-            <RouterView />
+            <AppLayout />
           </n-message-provider>
         </n-notification-provider>
       </n-dialog-provider>
@@ -14,7 +14,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, h } from 'vue'
+import { defineComponent } from 'vue'
+import AppLayout from '@/app-layouts/common/AppLayout.vue'
 import {
   useLoadingBar,
   useDialog,
@@ -25,14 +26,33 @@ import {
 } from 'naive-ui'
 
 // ─── Theme overrides ──────────────────────────────────────────────
-const theme = null // Use light theme by default; swap to darkTheme for dark mode
+// Minimal: white + black + rose accent
+const theme = null
 const themeOverrides: GlobalThemeOverrides = {
   common: {
-    primaryColor: '#6366F1',
-    primaryColorHover: '#818CF8',
-    primaryColorPressed: '#4F46E5',
-    primaryColorSuppl: '#818CF8',
+    primaryColor: '#f43f5e',
+    primaryColorHover: '#fb7185',
+    primaryColorPressed: '#e11d48',
+    primaryColorSuppl: '#fda4af',
     borderRadius: '8px',
+    fontFamily: "'M PLUS Rounded 1c', 'Prompt', sans-serif",
+    bodyColor: '#ffffff',
+    cardColor: '#ffffff',
+    textColorBase: '#0f172a',
+    textColor1: '#0f172a',
+    textColor2: '#475569',
+    textColor3: '#94a3b8',
+    borderColor: '#e2e8f0',
+    dividerColor: '#e2e8f0',
+    hoverColor: '#fff1f2',
+  },
+  Button: {
+    colorPrimary: '#f43f5e',
+    colorHoverPrimary: '#fb7185',
+    colorPressedPrimary: '#e11d48',
+    textColorPrimary: '#ffffff',
+    textColorHoverPrimary: '#ffffff',
+    textColorPressedPrimary: '#ffffff',
   },
 }
 

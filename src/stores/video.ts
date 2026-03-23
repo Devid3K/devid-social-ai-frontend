@@ -10,7 +10,6 @@ export const useVideoStore = defineStore('video', {
     list: [] as VideoJob[],
     current: null as VideoJob | null,
     styles: [] as VideoStyle[],
-    // Pagination
     page: 1,
     limit: 20,
     total: 0,
@@ -27,15 +26,16 @@ export const useVideoStore = defineStore('video', {
       this.loading = true
       this.error = null
       try {
-        // TODO: map paginated response to list and total
         const resp = await ApiService.v1.AiVideo.Jobs({
           page: params?.page ?? this.page,
           limit: params?.limit ?? this.limit,
         })
-        this.list = resp.data.data ?? resp.data
-        this.total = resp.data.total ?? this.list.length
+        const result = resp.data?.data ?? resp.data
+        this.list = result.data ?? result
+        this.total = result.total ?? this.list.length
+        this.page = result.page ?? this.page
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to load video jobs'
+        this.error = error?.response?.data?.message ?? error?.message ?? 'Failed to load video jobs'
       } finally {
         this.loading = false
       }
@@ -43,11 +43,10 @@ export const useVideoStore = defineStore('video', {
 
     async fetchStyles() {
       try {
-        // TODO: map styles response
         const resp = await ApiService.v1.AiVideo.Styles()
-        this.styles = resp.data
+        this.styles = resp.data?.data ?? resp.data
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to load video styles'
+        this.error = error?.response?.data?.message ?? error?.message ?? 'Failed to load video styles'
       }
     },
 
@@ -55,12 +54,14 @@ export const useVideoStore = defineStore('video', {
       this.generating = true
       this.error = null
       try {
-        // TODO: optimistically add job to list with queued status
         const resp = await ApiService.v1.AiVideo.Generate(params)
-        this.current = resp.data
-        return resp.data as VideoJob
+        const data = resp.data?.data ?? resp.data
+        this.current = data as VideoJob
+        // Refresh list
+        this.fetch()
+        return data as VideoJob
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to generate video'
+        this.error = error?.response?.data?.message ?? error?.message ?? 'Failed to generate video'
         throw error
       } finally {
         this.generating = false
@@ -73,16 +74,34 @@ export const useVideoStore = defineStore('video', {
         this.list = this.list.filter((j) => j.id !== id)
         this.total = Math.max(0, this.total - 1)
       } catch (error: any) {
-        this.error = error?.message ?? 'Failed to delete video job'
+        this.error = error?.response?.data?.message ?? error?.message ?? 'Failed to delete job'
         throw error
       }
     },
 
     updateJobProgress(id: number, progress: number) {
-      // Called via socket event to update job progress in-place
       const job = this.list.find((j) => j.id === id)
       if (job) {
         job.progress = progress
+      }
+    },
+
+    updateJobCompleted(id: number, videoUrl: string, thumbnailUrl?: string) {
+      const job = this.list.find((j) => j.id === id)
+      if (job) {
+        job.status = 'completed' as any
+        job.progress = 100
+        job.videoUrl = videoUrl
+        job.thumbnailUrl = thumbnailUrl ?? null
+      }
+    },
+
+    updateJobFailed(id: number, errorMessage: string) {
+      const job = this.list.find((j) => j.id === id)
+      if (job) {
+        job.status = 'failed' as any
+        job.progress = 0
+        job.errorMessage = errorMessage
       }
     },
   },

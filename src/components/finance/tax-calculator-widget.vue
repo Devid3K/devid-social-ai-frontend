@@ -24,7 +24,7 @@
       </n-button>
     </n-form>
     <div v-if="result" class="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-      <p class="text-sm text-gray-600 dark:text-gray-300">Estimated Tax:</p>
+      <p class="text-sm text-gray-500">Estimated Tax:</p>
       <p class="text-xl font-bold text-green-700 dark:text-green-400">
         ฿{{ result.taxAmount?.toLocaleString() ?? '-' }}
       </p>

@@ -1,13 +1,13 @@
 <template>
-  <div class="flex items-center gap-3 px-4 py-4 border-t border-gray-200 dark:border-gray-700">
+  <div class="flex items-center gap-3 px-4 py-4 border-t border-gray-200">
     <n-avatar round size="small" :src="authStore.user?.avatar || undefined">
       {{ initials }}
     </n-avatar>
     <div class="flex-1 min-w-0">
-      <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+      <p class="text-sm font-medium text-gray-900 truncate">
         {{ authStore.user?.name || authStore.user?.email || 'User' }}
       </p>
-      <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+      <p class="text-xs text-gray-500 truncate">
         {{ authStore.user?.role }}
       </p>
     </div>

@@ -1,31 +1,55 @@
 import type { Platform } from '@/enums'
 
-export interface TrendAnalysis {
+export interface TrendAnalysisResult {
   id: number
-  platform: Platform
   topic: string
+  platforms: string[]
   viralScore: number
-  engagement: number
-  hashtags: Hashtag[]
+  starRating: number
+  analysis: string
+  hashtags: string[]
+  trendData: { date: string; value: number }[]
+  relatedQueries: string[]
   insights: string[]
-  analyzedAt: string
 }
 
 export interface Hashtag {
   tag: string
-  count: number
+  viewCount: number
+  videoCount: number
   trend: 'rising' | 'stable' | 'falling'
-  platform: Platform
+  platform: string
 }
 
 export interface TikTokProduct {
   id: string
   name: string
   category: string
-  price: number
+  trendScore: number
   salesVolume: number
   commissionRate: number
-  viralScore: number
   videoCount: number
   thumbnailUrl: string | null
+}
+
+export interface ViralScoreResult {
+  score: number
+  factors: string[]
+  direction: 'rising' | 'stable' | 'falling'
+}
+
+export interface ChannelFitResult {
+  accountId: number
+  accountName: string
+  platform: string
+  fitScore: number
+  trendingHashtags: string[]
+  suggestions: string[]
+}
+
+export interface AnalyzeTrendParams {
+  topic: string
+  platforms?: string[]
+  region?: string
+  timeframe?: '24h' | '7d' | '30d' | '90d'
 }

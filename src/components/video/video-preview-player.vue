@@ -14,7 +14,7 @@
             <polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
           </svg>
         </n-icon>
-        <p class="text-sm text-gray-500 dark:text-gray-400">No video available</p>
+        <p class="text-sm text-gray-500">No video available</p>
       </div>
     </div>
   </div>

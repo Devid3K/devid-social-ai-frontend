@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Generate Script">
+  <n-card title="สร้างบทละคร">
     <n-form
       ref="formRef"
       :model="formData"
@@ -8,42 +8,51 @@
       @submit.prevent="handleSubmit"
     >
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <n-form-item label="Product Name" path="productName">
+        <n-form-item label="ชื่อสินค้า" path="productName">
           <n-input
             v-model:value="formData.productName"
-            placeholder="e.g. Vitamin C Serum"
+            placeholder="เช่น Vitamin C Serum"
           />
         </n-form-item>
-        <n-form-item label="Target Audience" path="targetAudience">
+        <n-form-item label="กลุ่มเป้าหมาย" path="targetAudience">
           <n-input
             v-model:value="formData.targetAudience"
-            placeholder="e.g. women 25-35"
+            placeholder="เช่น ผู้หญิง 25-35 ปี สนใจสกินแคร์"
           />
         </n-form-item>
       </div>
 
-      <n-form-item label="Description" path="description">
+      <n-form-item label="รายละเอียดสินค้า" path="description">
         <n-input
           v-model:value="formData.description"
           type="textarea"
-          placeholder="Describe the product or content..."
+          placeholder="อธิบายสินค้าหรือเนื้อหาที่ต้องการโปรโมท..."
           :rows="3"
         />
       </n-form-item>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <n-form-item label="Platform" path="platform">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <n-form-item label="แพลตฟอร์ม" path="platform">
           <n-select
             v-model:value="formData.platform"
             :options="platformOptions"
-            placeholder="Select platform"
+            placeholder="เลือกแพลตฟอร์ม"
           />
         </n-form-item>
-        <n-form-item label="Variants" path="count">
+        <n-form-item label="จำนวนบทละคร" path="count">
           <n-input-number
             v-model:value="formData.count"
             :min="1"
             :max="5"
+            class="w-full"
+          />
+        </n-form-item>
+        <n-form-item label="ความยาววิดีโอ (วินาที)" path="durationSeconds">
+          <n-input-number
+            v-model:value="formData.durationSeconds"
+            :min="15"
+            :max="180"
+            :step="15"
             class="w-full"
           />
         </n-form-item>
@@ -55,8 +64,9 @@
           attr-type="submit"
           :loading="loading"
           :disabled="loading"
+          size="large"
         >
-          Generate Script
+          {{ loading ? 'กำลังสร้าง...' : 'สร้างบทละคร' }}
         </n-button>
       </div>
     </n-form>
@@ -84,18 +94,21 @@ const formData = ref({
   targetAudience: '',
   platform: null as Platform | null,
   count: 3,
+  durationSeconds: 60,
 })
 
 const rules = {
-  productName: { required: true, message: 'Product name is required', trigger: 'blur' },
-  description: { required: true, message: 'Description is required', trigger: 'blur' },
-  platform: { required: true, message: 'Platform is required', trigger: 'change' },
+  productName: { required: true, message: 'กรุณาใส่ชื่อสินค้า', trigger: 'blur' },
+  description: { required: true, message: 'กรุณาใส่รายละเอียด', trigger: 'blur' },
+  platform: { required: true, message: 'กรุณาเลือกแพลตฟอร์ม', trigger: 'change' },
 }
 
-const platformOptions = Object.values(Platform).map((v) => ({
-  label: v.charAt(0).toUpperCase() + v.slice(1),
-  value: v,
-}))
+const platformOptions = [
+  { label: 'TikTok', value: Platform.TIKTOK },
+  { label: 'Instagram Reels', value: Platform.INSTAGRAM },
+  { label: 'YouTube Shorts', value: Platform.YOUTUBE },
+  { label: 'Facebook Reels', value: Platform.FACEBOOK },
+]
 
 async function handleSubmit() {
   try {

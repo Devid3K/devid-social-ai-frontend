@@ -21,7 +21,7 @@
         </svg>
         <div class="absolute inset-0 flex flex-col items-center justify-center">
           <span class="text-2xl font-bold" :style="{ color: meterColor }">{{ score }}</span>
-          <span class="text-xs text-gray-500 dark:text-gray-400">/ 100</span>
+          <span class="text-xs text-gray-500">/ 100</span>
         </div>
       </div>
       <n-tag :type="tagType" size="medium">{{ label }}</n-tag>

@@ -8,7 +8,7 @@
       </n-icon>
       <div class="flex-1 min-w-0">
         <div class="flex items-center justify-between mb-1">
-          <p class="text-sm font-medium text-gray-900 dark:text-white truncate">
+          <p class="text-sm font-medium text-white truncate">
             Job #{{ job.id }}
           </p>
           <n-tag size="small" :type="statusTagType">{{ job.status }}</n-tag>
@@ -21,7 +21,7 @@
           :border-radius="4"
           :fill-border-radius="4"
         />
-        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+        <p class="text-xs text-slate-300 mt-1">
           {{ job.createdAt ? new Date(job.createdAt).toLocaleString() : '' }}
         </p>
       </div>
@@ -42,7 +42,7 @@ const statusColor = computed(() => {
   switch (props.job.status) {
     case VideoJobStatus.COMPLETED: return 'text-green-500'
     case VideoJobStatus.FAILED: return 'text-red-500'
-    case VideoJobStatus.PROCESSING: return 'text-indigo-500'
+    case VideoJobStatus.PROCESSING: return 'text-rose-400'
     default: return 'text-gray-400'
   }
 })

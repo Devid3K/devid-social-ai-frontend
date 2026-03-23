@@ -3,7 +3,7 @@
     <div class="w-full max-w-md">
       <div class="text-center mb-8">
         <AppLogo class="justify-center mb-4" />
-        <h1 class="text-2xl font-bold text-white">Devid Social AI</h1>
+        <h1 class="text-2xl font-bold text-gray-900">Devid Social AI</h1>
         <p class="mt-1 text-sm text-gray-400">จัดการโซเชียลมีเดียด้วย AI</p>
       </div>
 

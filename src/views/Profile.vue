@@ -1,6 +1,6 @@
 <template>
   <div class="p-6 space-y-6">
-    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Profile</h1>
+    <h1 class="text-2xl font-bold text-gray-900">Profile</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <!-- Avatar + info -->
@@ -15,10 +15,10 @@
             {{ initials }}
           </n-avatar>
           <div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 class="text-lg font-semibold text-gray-900">
               {{ authStore.user?.name || 'User' }}
             </h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ authStore.user?.email }}</p>
+            <p class="text-sm text-gray-500">{{ authStore.user?.email }}</p>
           </div>
           <n-tag :type="authStore.isSuperAdmin ? 'warning' : 'default'" size="small">
             {{ authStore.user?.role }}

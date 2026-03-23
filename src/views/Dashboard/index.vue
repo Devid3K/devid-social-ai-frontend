@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 space-y-6">
     <div class="flex items-center justify-between flex-wrap gap-3">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">แดชบอร์ด</h1>
+      <h1 class="text-2xl font-bold text-gray-900">แดชบอร์ด</h1>
       <n-button size="small" @click="refreshAll" :loading="dashboardStore.loading">
         รีเฟรช
       </n-button>
@@ -37,7 +37,7 @@
         <n-card class="border-l-4 border-purple-500">
           <n-statistic label="ยอดเข้าชมทั้งหมด" :value="dashboardStore.totalViews" tabular-nums>
             <template #prefix>
-              <span class="text-purple-500 text-lg mr-1">
+              <span class="text-rose-400 text-lg mr-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="inline w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
               </span>
             </template>

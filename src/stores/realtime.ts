@@ -7,15 +7,16 @@ export interface RealtimeEvent {
   receivedAt: string
 }
 
+let eventCounter = 0
+
 export const useRealtimeStore = defineStore('realtime', {
   state: () => ({
     connected: false,
     loading: false,
     error: null as string | null,
     events: [] as RealtimeEvent[],
-    // Live analytics feed
     liveStats: {} as Record<string, unknown>,
-    // Max events to keep in memory
+    onlineUsers: 0,
     maxEvents: 100,
   }),
 
@@ -29,22 +30,23 @@ export const useRealtimeStore = defineStore('realtime', {
     },
 
     pushEvent(event: Omit<RealtimeEvent, 'id' | 'receivedAt'>) {
-      // TODO: add proper unique ID generation (e.g. crypto.randomUUID)
       const newEvent: RealtimeEvent = {
-        id: `${Date.now()}-${Math.random()}`,
+        id: `evt-${Date.now()}-${++eventCounter}`,
         ...event,
         receivedAt: new Date().toISOString(),
       }
       this.events.push(newEvent)
-      // Trim to maxEvents to prevent unbounded growth
       if (this.events.length > this.maxEvents) {
         this.events = this.events.slice(-this.maxEvents)
       }
     },
 
     updateLiveStat(key: string, value: unknown) {
-      // TODO: implement reactive live stat updates from socket
-      this.liveStats[key] = value
+      this.liveStats = { ...this.liveStats, [key]: value }
+    },
+
+    setOnlineUsers(count: number) {
+      this.onlineUsers = count
     },
 
     clearEvents() {

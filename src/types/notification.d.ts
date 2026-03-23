@@ -2,10 +2,11 @@ import type { NotificationType } from '@/enums'
 
 export interface Notification {
   id: number
+  userId: number
   type: NotificationType
   title: string
   message: string
+  data: Record<string, unknown> | null
   isRead: boolean
-  metadata: Record<string, unknown> | null
   createdAt: string
 }

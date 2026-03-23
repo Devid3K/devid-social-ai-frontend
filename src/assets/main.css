@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html, body {
+    font-family: 'M PLUS Rounded 1c', 'Prompt', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #ffffff;
+    color: #0f172a;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'M PLUS Rounded 1c', 'Prompt', sans-serif;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  input, textarea, select, button {
+    font-family: 'M PLUS Rounded 1c', 'Prompt', sans-serif;
+  }
+}

@@ -1,9 +1,9 @@
 <template>
   <div class="p-6 space-y-6">
     <div class="flex items-center justify-between flex-wrap gap-3">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Auto Post</h1>
+      <h1 class="text-2xl font-bold text-gray-900">Auto Post</h1>
       <n-button type="primary" @click="$router.push({ name: ROUTE_NAMES.NEW_POST })">
-        + New Post
+        + สร้างโพสต์ใหม่
       </n-button>
     </div>
 
@@ -11,23 +11,26 @@
 
     <!-- Filter tabs -->
     <n-tabs v-model:value="activeTab" type="segment" animated @update:value="handleTabChange">
-      <n-tab-pane name="all" tab="All" />
-      <n-tab-pane name="draft" tab="Drafts" />
-      <n-tab-pane name="scheduled" tab="Scheduled" />
-      <n-tab-pane name="published" tab="Published" />
+      <n-tab-pane name="all" tab="ทั้งหมด" />
+      <n-tab-pane name="draft" tab="แบบร่าง" />
+      <n-tab-pane name="scheduled" tab="ตั้งเวลา" />
+      <n-tab-pane name="published" tab="เผยแพร่แล้ว" />
+      <n-tab-pane name="failed" tab="ล้มเหลว" />
     </n-tabs>
 
-    <!-- Posts data table -->
+    <!-- Posts grid -->
     <n-card>
       <LoadingSpinner v-if="postStore.loading" />
       <div v-else-if="postStore.list.length === 0" class="text-center py-12 text-gray-400 text-sm">
-        No posts found.
+        ยังไม่มีโพสต์ — สร้างโพสต์ใหม่เลย!
       </div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <PostPreviewCard
           v-for="post in postStore.list"
           :key="post.id"
           :post="post"
+          @publish="handlePublish"
+          @delete="handleDelete"
         />
       </div>
       <div class="flex justify-center mt-4">
@@ -45,14 +48,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { usePostStore } from '@/stores/post'
 import { ROUTE_NAMES } from '@/constants/routes'
 import PostPreviewCard from '@/components/post/post-preview-card.vue'
 import LoadingSpinner from '@/components/common/loading-spinner.vue'
 
 const postStore = usePostStore()
-const router = useRouter()
 const activeTab = ref('all')
 
 onMounted(() => {
@@ -65,6 +66,15 @@ function handleTabChange(tab: string) {
 }
 
 function handlePageChange(page: number) {
-  postStore.fetch({ page })
+  const status = activeTab.value === 'all' ? undefined : activeTab.value
+  postStore.fetch({ page, status })
+}
+
+async function handlePublish(id: number) {
+  await postStore.publish(id)
+}
+
+async function handleDelete(id: number) {
+  await postStore.delete(id)
 }
 </script>

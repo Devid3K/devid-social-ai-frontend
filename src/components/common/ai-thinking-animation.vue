@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+  <div class="flex items-center gap-2 text-rose-400 dark:text-rose-300">
     <span class="text-sm font-medium">{{ label }}</span>
     <div class="flex items-center gap-1">
       <span

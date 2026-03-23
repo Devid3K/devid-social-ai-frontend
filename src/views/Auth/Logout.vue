@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+  <div class="min-h-screen flex items-center justify-center bg-gray-50">
     <div class="text-center">
       <n-spin size="large" />
-      <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">Signing out...</p>
+      <p class="mt-4 text-sm text-gray-500">Signing out...</p>
     </div>
   </div>
 </template>

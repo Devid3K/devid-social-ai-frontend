@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 space-y-6">
     <div class="flex items-center justify-between flex-wrap gap-3">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">User Management</h1>
+      <h1 class="text-2xl font-bold text-gray-900">User Management</h1>
       <n-button type="primary" @click="openCreateModal">+ Add User</n-button>
     </div>
 
