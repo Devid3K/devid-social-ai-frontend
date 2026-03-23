@@ -145,15 +145,20 @@
             <div
               v-for="clip in filteredClips"
               :key="clip.id"
-              class="flex gap-3 p-3 rounded-lg border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-colors"
+              class="flex gap-3 p-3 rounded-lg border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
+              @click="playVideo(clip)"
             >
               <!-- Clip Thumbnail -->
-              <div class="relative flex-shrink-0">
+              <div class="relative flex-shrink-0 group">
                 <img
                   :src="clip.thumbnail"
                   :alt="clip.title"
                   class="w-20 h-28 rounded-md object-cover"
                 />
+                <!-- Play button overlay -->
+                <div class="absolute inset-0 flex items-center justify-center bg-black/30 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
                 <span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1 rounded">
                   {{ formatDuration(clip.duration) }}
                 </span>
@@ -189,6 +194,58 @@
         </div>
       </template>
     </n-modal>
+
+    <!-- Video Player Modal -->
+    <n-modal
+      v-model:show="showVideoPlayer"
+      preset="card"
+      :title="playingClip?.title ?? 'Video'"
+      style="max-width: 480px;"
+      :bordered="true"
+      :closable="true"
+    >
+      <template v-if="playingClip">
+        <div class="space-y-3">
+          <!-- Video Player -->
+          <div class="relative bg-black rounded-lg overflow-hidden" style="aspect-ratio: 9/16; max-height: 70vh;">
+            <video
+              ref="videoRef"
+              :src="playingClip.videoUrl"
+              controls
+              autoplay
+              playsinline
+              class="w-full h-full object-contain"
+            >
+              Your browser does not support the video tag.
+            </video>
+            <span
+              v-if="playingClip.isAiGenerated"
+              class="absolute top-3 left-3 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg"
+            >
+              AI Generated
+            </span>
+          </div>
+
+          <!-- Clip Info -->
+          <div class="space-y-2">
+            <div class="flex items-center gap-2">
+              <img :src="playingClip.authorAvatar" class="w-8 h-8 rounded-full object-cover" />
+              <div>
+                <p class="text-sm font-medium text-gray-900">{{ playingClip.author }}</p>
+                <p class="text-xs text-gray-400">{{ formatDate(playingClip.postedAt) }}</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4 text-sm text-gray-500">
+              <span>👁 {{ formatCount(playingClip.viewCount) }}</span>
+              <span>❤️ {{ formatCount(playingClip.likeCount) }}</span>
+              <span>💬 {{ formatCount(playingClip.commentCount) }}</span>
+              <span>🔄 {{ formatCount(playingClip.shareCount) }}</span>
+            </div>
+          </div>
+        </div>
+      </template>
+    </n-modal>
   </div>
 </template>
 
@@ -204,6 +261,26 @@ const selectedProduct = ref<TikTokProduct | null>(null)
 const clipsData = ref<TikTokClipsResponse | null>(null)
 const loadingClips = ref(false)
 const clipFilter = ref<'all' | 'organic' | 'ai'>('all')
+
+// Video player
+const showVideoPlayer = ref(false)
+const playingClip = ref<TikTokRelatedClip | null>(null)
+const videoRef = ref<HTMLVideoElement | null>(null)
+
+function playVideo(clip: TikTokRelatedClip) {
+  if (!clip.videoUrl) {
+    window.$message?.warning('ไม่มีวิดีโอสำหรับคลิปนี้')
+    return
+  }
+  playingClip.value = clip
+  showVideoPlayer.value = true
+}
+
+watch(showVideoPlayer, (val) => {
+  if (!val && videoRef.value) {
+    videoRef.value.pause()
+  }
+})
 
 const filteredClips = computed<TikTokRelatedClip[]>(() => {
   if (!clipsData.value) return []
