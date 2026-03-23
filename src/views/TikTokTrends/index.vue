@@ -185,7 +185,18 @@
                     <span>💬 {{ formatCount(clip.commentCount) }}</span>
                     <span>🔄 {{ formatCount(clip.shareCount) }}</span>
                   </div>
-                  <p class="text-[11px] text-gray-400">{{ formatDate(clip.postedAt) }}</p>
+                  <div class="flex items-center gap-2">
+                    <p class="text-[11px] text-gray-400">{{ formatDate(clip.postedAt) }}</p>
+                    <a
+                      :href="clip.tiktokUrl"
+                      target="_blank"
+                      rel="noopener"
+                      class="text-[11px] text-rose-400 hover:text-rose-600 hover:underline"
+                      @click.stop
+                    >
+                      🔗 TikTok
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -211,45 +222,42 @@
       </template>
     </n-modal>
 
-    <!-- Video Player Modal -->
+    <!-- TikTok Video Modal -->
     <n-modal
       v-model:show="showVideoPlayer"
       preset="card"
       :title="playingClip?.title ?? 'Video'"
-      style="max-width: 480px;"
+      style="max-width: 420px;"
       :bordered="true"
       :closable="true"
     >
       <template v-if="playingClip">
         <div class="space-y-3">
-          <!-- Video Player -->
-          <div class="relative bg-black rounded-lg overflow-hidden" style="aspect-ratio: 9/16; max-height: 70vh;">
-            <video
-              ref="videoRef"
+          <!-- TikTok Embed -->
+          <div class="relative bg-black rounded-lg overflow-hidden" style="aspect-ratio: 9/16; max-height: 65vh;">
+            <iframe
               :src="playingClip.videoUrl"
-              :poster="playingClip.thumbnail"
-              controls
-              autoplay
-              playsinline
-              class="w-full h-full object-contain"
-            >
-              Your browser does not support the video tag.
-            </video>
+              class="w-full h-full border-0"
+              allow="encrypted-media; fullscreen"
+              allowfullscreen
+            />
             <span
               v-if="playingClip.isAiGenerated"
-              class="absolute top-3 left-3 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg"
+              class="absolute top-3 left-3 bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded-lg shadow-lg z-10"
             >
               AI Generated
             </span>
           </div>
 
           <!-- Clip Info -->
-          <div class="space-y-2">
-            <div class="flex items-center gap-2">
-              <img :src="playingClip.authorAvatar" class="w-8 h-8 rounded-full object-cover" />
-              <div>
-                <p class="text-sm font-medium text-gray-900">{{ playingClip.author }}</p>
-                <p class="text-xs text-gray-400">{{ formatDate(playingClip.postedAt) }}</p>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <img :src="playingClip.authorAvatar" class="w-8 h-8 rounded-full object-cover" />
+                <div>
+                  <p class="text-sm font-medium text-gray-900">@{{ playingClip.author }}</p>
+                  <p class="text-xs text-gray-400">{{ formatDate(playingClip.postedAt) }}</p>
+                </div>
               </div>
             </div>
 
@@ -258,6 +266,29 @@
               <span>❤️ {{ formatCount(playingClip.likeCount) }}</span>
               <span>💬 {{ formatCount(playingClip.commentCount) }}</span>
               <span>🔄 {{ formatCount(playingClip.shareCount) }}</span>
+            </div>
+
+            <!-- TikTok Link -->
+            <a
+              :href="playingClip.tiktokUrl"
+              target="_blank"
+              rel="noopener"
+              class="flex items-center justify-center gap-2 w-full py-2.5 bg-gray-900 hover:bg-black text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.72a8.2 8.2 0 0 0 4.76 1.52V6.81a4.83 4.83 0 0 1-1-.12z"/>
+              </svg>
+              ดูบน TikTok
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+
+            <!-- Link preview -->
+            <div class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              <span class="text-xs text-gray-400 truncate flex-1">{{ playingClip.tiktokUrl }}</span>
+              <n-button size="tiny" quaternary @click="copyLink(playingClip.tiktokUrl)">
+                คัดลอก
+              </n-button>
             </div>
           </div>
         </div>
@@ -296,22 +327,16 @@ watch(clipFilter, () => { clipPage.value = 1 })
 // Video player
 const showVideoPlayer = ref(false)
 const playingClip = ref<TikTokRelatedClip | null>(null)
-const videoRef = ref<HTMLVideoElement | null>(null)
 
 function playVideo(clip: TikTokRelatedClip) {
-  if (!clip.videoUrl) {
-    window.$message?.warning('ไม่มีวิดีโอสำหรับคลิปนี้')
-    return
-  }
   playingClip.value = clip
   showVideoPlayer.value = true
 }
 
-watch(showVideoPlayer, (val) => {
-  if (!val && videoRef.value) {
-    videoRef.value.pause()
-  }
-})
+function copyLink(url: string) {
+  navigator.clipboard.writeText(url)
+  window.$message?.success('คัดลอกลิงก์แล้ว')
+}
 
 const filteredClips = computed<TikTokRelatedClip[]>(() => {
   if (!clipsData.value) return []

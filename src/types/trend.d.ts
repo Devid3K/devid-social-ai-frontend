@@ -35,6 +35,7 @@ export interface TikTokRelatedClip {
   duration: number
   isAiGenerated: boolean
   postedAt: string
+  tiktokUrl: string
 }
 
 export interface TikTokProduct {
