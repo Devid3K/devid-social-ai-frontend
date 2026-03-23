@@ -141,55 +141,71 @@
             <n-spin />
           </div>
 
-          <div v-else class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
-            <div
-              v-for="clip in filteredClips"
-              :key="clip.id"
-              class="flex gap-3 p-3 rounded-lg border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer"
-              @click="playVideo(clip)"
-            >
-              <!-- Clip Thumbnail -->
-              <div class="relative flex-shrink-0 group">
-                <img
-                  :src="clip.thumbnail"
-                  :alt="clip.title"
-                  class="w-20 h-28 rounded-md object-cover"
-                />
-                <!-- Play button overlay -->
-                <div class="absolute inset-0 flex items-center justify-center bg-black/30 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <div v-else>
+            <!-- Paginated clips -->
+            <div class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
+              <div
+                v-for="clip in paginatedClips"
+                :key="clip.id"
+                class="flex gap-3 p-3 rounded-lg border border-gray-100 hover:border-rose-200 hover:bg-gray-50 transition-colors cursor-pointer"
+                @click="playVideo(clip)"
+              >
+                <!-- Clip Thumbnail (uses product image as cover) -->
+                <div class="relative flex-shrink-0 group">
+                  <img
+                    :src="clip.thumbnail"
+                    :alt="clip.title"
+                    class="w-20 h-28 rounded-md object-cover"
+                  />
+                  <!-- Play button overlay -->
+                  <div class="absolute inset-0 flex items-center justify-center bg-black/30 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  </div>
+                  <span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1 rounded">
+                    {{ formatDuration(clip.duration) }}
+                  </span>
+                  <span
+                    v-if="clip.isAiGenerated"
+                    class="absolute top-1 left-1 bg-purple-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded"
+                  >
+                    AI
+                  </span>
                 </div>
-                <span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1 rounded">
-                  {{ formatDuration(clip.duration) }}
-                </span>
-                <span
-                  v-if="clip.isAiGenerated"
-                  class="absolute top-1 left-1 bg-purple-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded"
-                >
-                  AI
-                </span>
+
+                <!-- Clip Info -->
+                <div class="flex-1 min-w-0 space-y-1">
+                  <p class="text-sm font-medium text-gray-900 line-clamp-2 leading-tight">{{ clip.title }}</p>
+                  <div class="flex items-center gap-2">
+                    <img :src="clip.authorAvatar" class="w-4 h-4 rounded-full object-cover" />
+                    <span class="text-xs text-gray-500">{{ clip.author }}</span>
+                  </div>
+                  <div class="flex items-center gap-3 text-xs text-gray-400">
+                    <span>👁 {{ formatCount(clip.viewCount) }}</span>
+                    <span>❤️ {{ formatCount(clip.likeCount) }}</span>
+                    <span>💬 {{ formatCount(clip.commentCount) }}</span>
+                    <span>🔄 {{ formatCount(clip.shareCount) }}</span>
+                  </div>
+                  <p class="text-[11px] text-gray-400">{{ formatDate(clip.postedAt) }}</p>
+                </div>
               </div>
 
-              <!-- Clip Info -->
-              <div class="flex-1 min-w-0 space-y-1">
-                <p class="text-sm font-medium text-gray-900 line-clamp-2 leading-tight">{{ clip.title }}</p>
-                <div class="flex items-center gap-2">
-                  <img :src="clip.authorAvatar" class="w-4 h-4 rounded-full" />
-                  <span class="text-xs text-gray-500">{{ clip.author }}</span>
-                </div>
-                <div class="flex items-center gap-3 text-xs text-gray-400">
-                  <span>👁 {{ formatCount(clip.viewCount) }}</span>
-                  <span>❤️ {{ formatCount(clip.likeCount) }}</span>
-                  <span>💬 {{ formatCount(clip.commentCount) }}</span>
-                  <span>🔄 {{ formatCount(clip.shareCount) }}</span>
-                </div>
-                <p class="text-[11px] text-gray-400">{{ formatDate(clip.postedAt) }}</p>
-              </div>
+              <p v-if="filteredClips.length === 0" class="text-center text-gray-400 py-4">
+                ไม่มีคลิปในหมวดนี้
+              </p>
             </div>
 
-            <p v-if="filteredClips.length === 0" class="text-center text-gray-400 py-4">
-              ไม่มีคลิปในหมวดนี้
-            </p>
+            <!-- Pagination -->
+            <div v-if="clipTotalPages > 1" class="flex items-center justify-between pt-3 border-t border-gray-100 mt-3">
+              <span class="text-xs text-gray-400">
+                {{ (clipPage - 1) * clipPageSize + 1 }}-{{ Math.min(clipPage * clipPageSize, filteredClips.length) }} / {{ filteredClips.length }} คลิป
+              </span>
+              <n-pagination
+                v-model:page="clipPage"
+                :page-count="clipTotalPages"
+                :page-slot="5"
+                size="small"
+              />
+            </div>
           </div>
         </div>
       </template>
@@ -211,6 +227,7 @@
             <video
               ref="videoRef"
               :src="playingClip.videoUrl"
+              :poster="playingClip.thumbnail"
               controls
               autoplay
               playsinline
@@ -261,6 +278,20 @@ const selectedProduct = ref<TikTokProduct | null>(null)
 const clipsData = ref<TikTokClipsResponse | null>(null)
 const loadingClips = ref(false)
 const clipFilter = ref<'all' | 'organic' | 'ai'>('all')
+
+// Clips pagination
+const clipPage = ref(1)
+const clipPageSize = 5
+
+const clipTotalPages = computed(() => Math.ceil(filteredClips.value.length / clipPageSize))
+
+const paginatedClips = computed(() => {
+  const start = (clipPage.value - 1) * clipPageSize
+  return filteredClips.value.slice(start, start + clipPageSize)
+})
+
+// Reset page when filter changes
+watch(clipFilter, () => { clipPage.value = 1 })
 
 // Video player
 const showVideoPlayer = ref(false)
