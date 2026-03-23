@@ -1,7 +1,7 @@
 # Devid Social AI — Testing Report & Missing Items
 
 > ทดสอบเมื่อ: 2026-03-23
-> Backend: http://localhost:3000 | Frontend: http://localhost:5173
+> Backend: http://localhost:4000 | Frontend: http://localhost:3000
 
 ---
 

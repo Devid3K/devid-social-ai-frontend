@@ -75,10 +75,10 @@
 ### Infrastructure
 | Service | Port | Purpose |
 |---|---|---|
-| Backend (NestJS) | 3000 | API Server |
-| Frontend (Vite dev) | 5173 | Dev server |
+| Backend (NestJS) | 4000 | API Server |
+| Frontend (Vite dev) | 3000 | Dev server |
 | Frontend (Nginx prod) | 80 | Production |
-| MySQL 8.0 | 3306 | Database |
+| MySQL 8.0 | 8080 | Database |
 | Redis 7 Alpine | 6379 | Queue + Cache |
 | MinIO | 9000 / 9001 | Object Storage |
 
@@ -425,7 +425,7 @@ enum NotificationType { video_complete, post_published, trend_alert, system }
 | PATCH | `/users/:id` | แก้ไข user |
 | DELETE | `/users/:id` | ลบ user |
 
-**Swagger Docs:** `http://localhost:3000/api/docs`
+**Swagger Docs:** `http://localhost:4000/api/docs`
 
 ---
 
@@ -436,13 +436,13 @@ enum NotificationType { video_complete, post_published, trend_alert, system }
 #### App
 | Variable | ตัวอย่าง | คำอธิบาย | หาได้ที่ |
 |---|---|---|---|
-| `PORT` | `3000` | Server port | ตั้งเอง |
+| `PORT` | `4000` | Server port | ตั้งเอง |
 | `NODE_ENV` | `development` | Environment | ตั้งเอง |
 
 #### Database
 | Variable | ตัวอย่าง | คำอธิบาย | หาได้ที่ |
 |---|---|---|---|
-| `DATABASE_URL` | `mysql://root:password@localhost:3306/social_ai_db` | MySQL connection string | ตั้งเอง / Docker Compose |
+| `DATABASE_URL` | `mysql://root:password@localhost:8080/social_ai_db` | MySQL connection string | ตั้งเอง / Docker Compose |
 | `MYSQL_ROOT_PASSWORD` | `rootpassword` | MySQL root password | ตั้งเอง |
 | `MYSQL_DATABASE` | `social_ai_db` | Database name | ตั้งเอง |
 | `MYSQL_USER` | `social_ai_user` | MySQL user | ตั้งเอง |
@@ -502,8 +502,8 @@ enum NotificationType { video_complete, post_published, trend_alert, system }
 
 | Variable | ตัวอย่าง | คำอธิบาย |
 |---|---|---|
-| `VITE_API_URL` | `http://localhost:3000` | Backend API URL |
-| `VITE_SOCKET_URL` | `http://localhost:3000` | Socket.IO URL |
+| `VITE_API_URL` | `http://localhost:4000` | Backend API URL |
+| `VITE_SOCKET_URL` | `http://localhost:4000` | Socket.IO URL |
 | `VITE_APP_NAME` | `devid-social-ai` | App name |
 | `VITE_APP_VERSION` | `1.0.0` | App version |
 
@@ -572,8 +572,8 @@ npx prisma db seed
 ```bash
 cd backend
 npm run start:dev
-# Server: http://localhost:3000
-# Swagger: http://localhost:3000/api/docs
+# Server: http://localhost:4000
+# Swagger: http://localhost:4000/api/docs
 ```
 
 ### Frontend
@@ -581,7 +581,7 @@ npm run start:dev
 ```bash
 cd frontend
 npm run dev
-# Dev server: http://localhost:5173
+# Dev server: http://localhost:3000
 ```
 
 ### ทั้งคู่พร้อมกัน
@@ -619,11 +619,11 @@ Internet
   ▼
 Nginx (port 80)
   ├── / → Vue SPA (static files)
-  ├── /api → Proxy to NestJS (port 3000)
+  ├── /api → Proxy to NestJS (port 4000)
   └── /socket.io → Proxy WebSocket to NestJS
          │
          ▼
-    NestJS Backend (port 3000)
+    NestJS Backend (port 4000)
          │
     ┌────┼────┐
     │    │    │
