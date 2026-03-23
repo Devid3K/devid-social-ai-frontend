@@ -55,6 +55,9 @@ const Trends = {
   Platform: (platform: string) => axios.get(`/api/v1/trends/platform/${platform}`),
   ViralScore: (data: any) => axios.post('/api/v1/trends/viral-score', data),
   TikTokProducts: (params?: any) => axios.get('/api/v1/trends/tiktok-products', { params }),
+  ProductDetail: (productId: string) => axios.get(`/api/v1/trends/tiktok-products/${productId}`),
+  RelatedClips: (productId: string, params?: any) =>
+    axios.get(`/api/v1/trends/tiktok-products/${productId}/clips`, { params }),
   ChannelFit: (accountId: number) => axios.get(`/api/v1/trends/channel-fit/${accountId}`),
 }
 

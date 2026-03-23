@@ -188,25 +188,25 @@
         กดปุ่ม "โหลดข้อมูล" เพื่อดูสินค้าที่กำลังเทรนด์
       </div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        <n-card
+        <div
           v-for="p in trendStore.tiktokProducts"
           :key="p.id"
-          size="small"
-          hoverable
+          class="bg-white rounded-lg border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md hover:border-rose-200 transition-all"
+          @click="$router.push('/tiktok-trends')"
         >
-          <div class="space-y-1">
-            <p class="font-medium text-sm text-gray-900">{{ p.name }}</p>
-            <div class="flex items-center gap-2">
-              <n-tag size="small">{{ p.category }}</n-tag>
+          <img :src="p.thumbnail" :alt="p.name" class="w-full h-28 object-cover" />
+          <div class="p-3 space-y-1">
+            <div class="flex items-start justify-between gap-1">
+              <p class="font-medium text-sm text-gray-900 leading-tight">{{ p.name }}</p>
               <ViralScoreBadge :score="p.trendScore" />
             </div>
-            <div class="grid grid-cols-2 gap-1 text-xs text-gray-500 mt-2">
-              <span>ยอดขาย: {{ formatNumber(p.salesVolume) }}</span>
-              <span>คอมมิชชั่น: {{ p.commissionRate }}%</span>
-              <span>วิดีโอ: {{ formatNumber(p.videoCount) }}</span>
+            <p class="text-xs text-gray-500 line-clamp-1">{{ p.description }}</p>
+            <div class="flex items-center justify-between text-xs text-gray-400 pt-1">
+              <span>{{ p.category }}</span>
+              <span class="text-rose-500 font-medium">{{ p.priceRange }}</span>
             </div>
           </div>
-        </n-card>
+        </div>
       </div>
     </n-card>
   </div>

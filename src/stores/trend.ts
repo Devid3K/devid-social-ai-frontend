@@ -4,6 +4,7 @@ import type {
   TrendAnalysisResult,
   Hashtag,
   TikTokProduct,
+  TikTokClipsResponse,
   AnalyzeTrendParams,
   ViralScoreResult,
 } from '@/types/trend.d'
@@ -97,6 +98,32 @@ export const useTrendStore = defineStore('trend', {
         this.error = error?.response?.data?.message ?? error?.message ?? 'Failed to load TikTok products'
       } finally {
         this.loading = false
+      }
+    },
+
+    async fetchProductDetail(productId: string): Promise<TikTokProduct | null> {
+      try {
+        const resp = await ApiService.v1.Trends.ProductDetail(productId)
+        return (resp.data?.data ?? resp.data) as TikTokProduct
+      } catch (error: any) {
+        this.error = error?.response?.data?.message ?? 'Failed to load product detail'
+        return null
+      }
+    },
+
+    async fetchRelatedClips(
+      productId: string,
+      filterAi?: boolean,
+    ): Promise<TikTokClipsResponse | null> {
+      try {
+        const params: any = {}
+        if (filterAi === true) params.filterAi = 'true'
+        if (filterAi === false) params.filterAi = 'false'
+        const resp = await ApiService.v1.Trends.RelatedClips(productId, params)
+        return (resp.data?.data ?? resp.data) as TikTokClipsResponse
+      } catch (error: any) {
+        this.error = error?.response?.data?.message ?? 'Failed to load related clips'
+        return null
       }
     },
   },

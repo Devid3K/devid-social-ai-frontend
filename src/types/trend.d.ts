@@ -21,6 +21,22 @@ export interface Hashtag {
   platform: string
 }
 
+export interface TikTokRelatedClip {
+  id: string
+  title: string
+  thumbnail: string
+  videoUrl: string
+  viewCount: number
+  likeCount: number
+  commentCount: number
+  shareCount: number
+  author: string
+  authorAvatar: string
+  duration: number
+  isAiGenerated: boolean
+  postedAt: string
+}
+
 export interface TikTokProduct {
   id: string
   name: string
@@ -29,7 +45,19 @@ export interface TikTokProduct {
   salesVolume: number
   commissionRate: number
   videoCount: number
-  thumbnailUrl: string | null
+  thumbnail: string
+  description: string
+  priceRange: string
+  relatedHashtags: string[]
+  topClips: TikTokRelatedClip[]
+}
+
+export interface TikTokClipsResponse {
+  product: { id: string; name: string; category: string }
+  clips: TikTokRelatedClip[]
+  total: number
+  aiCount: number
+  organicCount: number
 }
 
 export interface ViralScoreResult {
